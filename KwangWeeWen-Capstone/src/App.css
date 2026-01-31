@@ -1,0 +1,22 @@
+.page-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;    /* vertical centering */
+  align-items: center;        /* horizontal centering */
+  height: 100vh;              /* full page height */
+  gap: 8px;                   /* minimal spacing between boxes */
+}
+
+.section-box {
+  max-width: 800px; 
+  width: 90%;
+  /* border: 1px solid #ccc; */
+  padding: 16px;
+  border-radius: 6px;
+  background: #fff;
+}
+.logo {
+  width: 200px;
+  height: auto;
+  margin-bottom: 0px;
+}
