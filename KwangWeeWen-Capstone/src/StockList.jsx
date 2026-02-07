@@ -1,12 +1,13 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { usePortfolioMetrics } from "./usePortfolioMetrics";
-import "./StockList.css";
 import { useStocks } from "./StockContext";
+import "./StockList.css";
 
 const StockList = () => {
   const { stocks, deleteStock } = useStocks();
   const { stocks: enrichedStocks, totalProfitLoss } =
     usePortfolioMetrics(stocks);
+
   const sortedStocks = useMemo(() => {
     return [...enrichedStocks].sort((a, b) => a.symbol.localeCompare(b.symbol));
   }, [enrichedStocks]);
@@ -20,19 +21,24 @@ const StockList = () => {
       </div>
     );
   }
+
   return (
     <div className="container">
       <table className="stock-table">
-        <tbody>
+        <thead>
           <tr>
             <th>Symbol</th>
             <th>Quantity</th>
             <th>Purchase Price</th>
             <th>Current Price</th>
             <th>Profit/Loss</th>
+            <th></th>
           </tr>
-          {sortedStocks.map((stock, index) => (
-            <tr key={index}>
+        </thead>
+
+        <tbody>
+          {sortedStocks.map((stock) => (
+            <tr key={stock.id}>
               <td>{stock.symbol}</td>
               <td>{stock.quantity}</td>
               <td>${stock.purchasePrice.toFixed(2)}</td>
@@ -41,15 +47,20 @@ const StockList = () => {
                 ${stock.profitLoss.toFixed(2)}
               </td>
               <td>
-                <button className="delete-btn" onClick={() => deleteStock(stock.symbol)}
+                <button
+                  className="delete-btn"
+                  onClick={() => deleteStock(stock.id)}
                 >
                   ✕
                 </button>
               </td>
             </tr>
           ))}
+        </tbody>
+
+        <tfoot>
           <tr>
-            <td colSpan="4" style={{ fontWeight: "bold" }}>
+            <td colSpan={4} style={{ fontWeight: "bold" }}>
               Total P/L
             </td>
             <td
@@ -60,10 +71,12 @@ const StockList = () => {
             >
               ${totalProfitLoss.toFixed(2)}
             </td>
+            <td></td>
           </tr>
-        </tbody>
+        </tfoot>
       </table>
     </div>
   );
 };
+
 export default StockList;

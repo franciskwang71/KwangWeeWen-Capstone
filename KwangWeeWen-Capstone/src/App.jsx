@@ -8,18 +8,43 @@ import { StockProvider } from "./StockContext";
 function App() {
   return (
     <StockProvider>
-      <div>
-        <img src={logo} alt="Capstone Logo" className="logo" />
-        <h1>Stock Portfolio</h1>
-        <div>
+      <AppLayout>
+        <Header />
+        <Section title="New Investment">
           <StockForm />
-        </div>
-        <h2>Stock List</h2>
-        <div>
+        </Section>
+        <Section title="Stock Portfolio">
           <StockList />
-        </div>{" "}
-      </div>
+        </Section>
+      </AppLayout>
     </StockProvider>
   );
 }
+
 export default App;
+
+// ----------------------
+// Subcomponents
+// ----------------------
+
+function AppLayout({ children }) {
+  return <main className="app-container">{children}</main>;
+}
+
+function Header() {
+  return (
+    <header className="app-header">
+      <img src={logo} alt="Capstone Logo" className="logo" />
+      <h1>Investment Dashboard</h1>
+    </header>
+  );
+}
+
+function Section({ title, children }) {
+  return (
+    <section className="app-section">
+      <h2>{title}</h2>
+      {children}
+    </section>
+  );
+}
