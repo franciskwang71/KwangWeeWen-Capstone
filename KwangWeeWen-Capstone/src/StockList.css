@@ -1,0 +1,29 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: left;
+  column-gap: 10px;
+}
+.stock-table {
+  margin-top: 20px;
+  width: 100%;
+  border-collapse: collapse;
+  align-items: right;
+}
+.stock-table td,
+.stock-table tr {
+  border: 1px solid #d0d0d0;
+  padding: 8px;
+  text-align: right;
+}
+.delete-btn {
+  background: transparent;
+  border: none;
+  color: #bbbbbb;
+  font-size: 16px;
+  cursor: pointer;
+}
+.delete-btn:hover {
+  color: #ff0000;
+}

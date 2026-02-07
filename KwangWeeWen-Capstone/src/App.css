@@ -1,22 +1,17 @@
-.page-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;    /* vertical centering */
-  align-items: center;        /* horizontal centering */
-  height: 100vh;              /* full page height */
-  gap: 8px;                   /* minimal spacing between boxes */
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1rem;
+  text-align: left;
 }
 
-.section-box {
-  max-width: 800px; 
-  width: 90%;
-  /* border: 1px solid #ccc; */
-  padding: 16px;
-  border-radius: 6px;
-  background: #fff;
-}
 .logo {
-  width: 200px;
-  height: auto;
-  margin-bottom: 0px;
+  height: 10em;
+  padding: 0em;
+  margin: 0 0 -3em 0;
+}
+.h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  margin-top: -1rem;
 }
