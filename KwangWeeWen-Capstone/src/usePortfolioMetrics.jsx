@@ -1,54 +1,43 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { fetchCurrentPrice } from "./fetchCurrentPrice";
 
 export const usePortfolioMetrics = (stocks) => {
   const [livePrices, setLivePrices] = useState({});
-  const priceCache = useRef({}); // cache to avoid re-fetching
+  const priceCache = useRef({});
 
-  useEffect(() => {
+  const loadPrices = useCallback(async () => {
     if (stocks.length === 0) {
       setLivePrices({});
       return;
     }
 
-    let cancelled = false;
+    const symbols = stocks.map((s) => s.symbol);
+    const missing = symbols.filter(
+      (sym) => priceCache.current[sym] === undefined
+    );
 
-    const loadPrices = async () => {
-      const symbols = stocks.map((s) => s.symbol);
+    if (missing.length === 0) {
+      setLivePrices({ ...priceCache.current });
+      return;
+    }
 
-      // Only fetch prices for symbols not already cached
-      const missingSymbols = symbols.filter(
-        (sym) => priceCache.current[sym] === undefined,
-      );
+    const results = await Promise.all(
+      missing.map(async (sym) => {
+        const price = await fetchCurrentPrice(sym);
+        return [sym, price ?? 0];
+      })
+    );
 
-      if (missingSymbols.length === 0) {
-        // All prices already cached
-        setLivePrices({ ...priceCache.current });
-        return;
-      }
+    for (const [sym, price] of results) {
+      priceCache.current[sym] = price;
+    }
 
-      // Fetch missing prices in parallel
-      const results = await Promise.all(
-        missingSymbols.map(async (sym) => {
-          const price = await fetchCurrentPrice(sym);
-          return [sym, price ?? 0];
-        }),
-      );
-
-      // Update cache
-      for (const [sym, price] of results) {
-        priceCache.current[sym] = price;
-      }
-      if (!cancelled) {
-        setLivePrices({ ...priceCache.current });
-      }
-    };
-
-    loadPrices();
-    return () => {
-      cancelled = true;
-    };
+    setLivePrices({ ...priceCache.current });
   }, [stocks]);
+
+  useEffect(() => {
+    loadPrices();
+  }, [loadPrices]);
 
   const enrichedStocks = useMemo(() => {
     return stocks.map((stock) => {
