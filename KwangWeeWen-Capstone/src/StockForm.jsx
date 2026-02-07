@@ -1,17 +1,11 @@
 import { Button, InputNumber, Input, message } from "antd";
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { useStocks } from "./StockContext";
-import { fetchCurrentPrice } from "./fetchCurrentPrice";
 import "./StockForm.css";
-
-// The following for Alpha Vantage API
-// const API_KEY = "DEMO";
-// const API_KEY = "8VFAS4EDIMVXMODJ";
-
-const API_KEY = "vlfbSE5J4thppQmsmI1xppH0bXhAYSqE";
 
 const StockForm = () => {
   const { addStock } = useStocks();
+  const token = "bThqd1hEWFJBanR2cFhucUlOMVllWEVieVBJdExVZUNCYm5vSl84NGxvTT0"
 
   const [symbol, setSymbol] = useState("");
   const [price, setPrice] = useState(null);
@@ -27,19 +21,12 @@ const StockForm = () => {
     if (!symbol) return false;
     try {
       const response = await fetch(
-        // The following for Alpha Vantage API
-        // `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${API_KEY}`,
-        `https://api.massive.com/v3/reference/tickers/${symbol}?apiKey=${API_KEY}`,
-        // `https://api.massive.com/v2/aggs/ticker/${symbol}/range/1/day/${startDate}/${endDate}?adjusted=true&sort=asc&limit=120&apiKey=${API_KEY}`,
+        // The following for Stock API
+        `https://api.marketdata.app/v1/stocks/quotes/${symbol}/?token=${token}`
       );
       const data = await response.json();
       console.log("API response data:", data);
-      // The following for Alpha Vantage API
-      // const quote = data["Global Quote"]; // If no quote returned → invalid symbol
-      // const valid = quote && quote["01. symbol"];
-
-      const quote = data["results"];
-      const valid = quote && quote["ticker"];
+      const valid = data["symbol"] 
 
       setIsSymbolValid(valid ? true : false);
       return valid ? true : false;

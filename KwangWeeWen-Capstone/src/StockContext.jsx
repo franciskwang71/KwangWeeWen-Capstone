@@ -1,30 +1,44 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 const StockContext = createContext();
 
 export const StockProvider = ({ children }) => {
   const [stocks, setStocks] = useState(() => {
-    const saved = localStorage.getItem("stocks");
-    return saved ? JSON.parse(saved) : [];
+    try {
+      const saved = localStorage.getItem("stocks");
+      const parsed = saved ? JSON.parse(saved) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
   });
 
   const addStock = (stock) => {
-    setStocks((prev) => [...prev, stock]);
+    const symbol = stock.symbol.trim().toUpperCase();
+
+    setStocks((prev) => [
+      ...prev,
+      {
+        id: crypto.randomUUID(), // unique row identifier
+        symbol,
+        quantity: Number(stock.quantity),
+        purchasePrice: Number(stock.purchasePrice),
+      },
+    ]);
   };
 
-  const deleteStock = (symbol) => {
-    setStocks((prev) => prev.filter((s) => s.symbol !== symbol));
+  const deleteStock = (id) => {
+    setStocks((prev) => prev.filter((s) => s.id !== id));
   };
 
-  // Persist to localStorage whenever stocks change
   useEffect(() => {
     localStorage.setItem("stocks", JSON.stringify(stocks));
   }, [stocks]);
 
+  const value = useMemo(() => ({ stocks, addStock, deleteStock }), [stocks]);
+
   return (
-    <StockContext.Provider value={{ stocks, addStock, deleteStock}}>
-      {children}
-    </StockContext.Provider>
+    <StockContext.Provider value={value}>{children}</StockContext.Provider>
   );
 };
 
