@@ -8,6 +8,22 @@ const StockList = () => {
   const { stocks: enrichedStocks, totalProfitLoss } =
     usePortfolioMetrics(stocks);
 
+  const formatQuantity = (value) =>
+    new Intl.NumberFormat("en-US", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value);
+
+  const formatCurrency = (value) =>
+    new Intl.NumberFormat("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value);
+
+  const profitArrow = (isProfit) => (isProfit ? "▲" : "▼");
+
+  const arrowColor = (isProfit) => (isProfit ? "green" : "red");
+
   const sortedStocks = useMemo(() => {
     return [...enrichedStocks].sort((a, b) => a.symbol.localeCompare(b.symbol));
   }, [enrichedStocks]);
@@ -40,12 +56,16 @@ const StockList = () => {
           {sortedStocks.map((stock) => (
             <tr key={stock.id}>
               <td>{stock.symbol}</td>
-              <td>{stock.quantity}</td>
-              <td>${stock.purchasePrice.toFixed(2)}</td>
-              <td>${stock.currentPrice.toFixed(2)}</td>
-              <td style={{ color: stock.isProfit ? "green" : "red" }}>
-                ${stock.profitLoss.toFixed(2)}
+              <td>{formatQuantity(stock.quantity)}</td>
+              <td>${formatCurrency(stock.purchasePrice)}</td>
+              <td>${formatCurrency(stock.currentPrice)}</td>
+              <td
+                style={{ color: arrowColor(stock.isProfit), fontWeight: 600 }}
+              >
+                {profitArrow(stock.isProfit)} $
+                {formatCurrency(stock.profitLoss)}
               </td>
+
               <td>
                 <button
                   className="delete-btn"
@@ -61,16 +81,18 @@ const StockList = () => {
         <tfoot>
           <tr>
             <td colSpan={4} style={{ fontWeight: "bold" }}>
-              Total P/L
+              Portfolio Value
             </td>
             <td
               style={{
                 fontWeight: "bold",
-                color: totalProfitLoss >= 0 ? "green" : "red",
+                color: arrowColor(totalProfitLoss >= 0),
               }}
             >
-              ${totalProfitLoss.toFixed(2)}
+              {profitArrow(totalProfitLoss >= 0)} $
+              {formatCurrency(totalProfitLoss)}
             </td>
+
             <td></td>
           </tr>
         </tfoot>

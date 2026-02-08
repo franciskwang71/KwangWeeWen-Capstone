@@ -11,6 +11,9 @@
   border-collapse: collapse;
   align-items: right;
 }
+.stock-table th {
+  text-align: center;
+}
 .stock-table td,
 .stock-table tr {
   border: 1px solid #d0d0d0;
