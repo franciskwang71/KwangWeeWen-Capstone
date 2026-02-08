@@ -36,10 +36,8 @@ jobs:
           node-version: 20
           # cache: 'npm' //remove this line
       - name: Install dependencies
-        working-directory: ./KwangWeeWen-Capstone
         run: npm ci
       - name: Build
-        working-directory: ./KwangWeeWen-Capstone
         run: npm run build
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -47,7 +45,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           # Upload dist folder
-          path: "./KwangWeeWen-Capstone/dist"
+          path: './dist'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
